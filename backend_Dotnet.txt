@@ -1,0 +1,142 @@
+
+1)Creando proyecto nuevo de backend:
+dotnet new webapi -n Nombredelproyecto
+
+2)Instalar dependencias:
+	dotnet add package Microsoft.EntityFrameworkCore --version 3.0.0
+	dotnet add package Microsoft.EntityFrameworkCore.Design --version 3.0.0
+	dotnet add package Npgsql.EntityFrameworkCore.PostgreSQL --version 3.0.1
+	dotnet add package Microsoft.EntityFrameworkCore.Tools --version 3.0.0
+	dotnet add package Microsoft.VisualStudio.Web.CodeGeneration.Design --version 3.0.0
+	dotnet add package Microsoft.EntityFrameworkCore.SqlServer --version 3.0.0 		
+	dotnet add package Microsoft.AspNetCore.Cors --version 2.2.0
+
+Scafolding la base de datos en visualcode:
+	Primera vez:
+3)dotnet ef dbcontext scaffold "User ID = postgres;Password=Marcial1995;Server=localhost;Port=5432;Database=grback;Integrated Security=true; Pooling=true;" Npgsql.EntityFrameworkCore.PostgreSQL -o Models
+	
+4)	Luego de correr el comando modificar startup :
+	
+	Dentro de ConfigureService debajo de Service.AddMvc
+
+		 services.AddEntityFrameworkNpgsql().AddDbContext<grbackContext>(opt => 
+           opt.UseNpgsql(Configuration.GetConnectionString("MyWebApiConnection")));
+            services.AddCors(options => 
+            {
+                options.AddPolicy("CorsPolicy",
+                builder => builder.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials());
+            });
+           -------------------------------------------------------
+	
+5)	Dentro de Configure
+		app.UseCors("CorsPolicy");
+
+6) 	Luego en el archivo appsettings.json debemos agregar este codigo debajo de allowedhost:"*",
+		 "ConnectionStrings":{
+    "MyWebApiConnection" : "User ID = postgres;Password=Marcial1995;Server=localhost;Port=5432;Database=grback;Integrated Security=true; Pooling=true;"
+  }
+
+
+	Para actualizar el segundo para cuando vayamos modificando nuestras tablas:
+7)dotnet ef dbcontext scaffold "User ID = postgres;Password=Marcial1995;Server=localhost;Port=5432;Database=grback;Integrated Security=true;
+
+
+
+ Pooling=true;" Npgsql.EntityFrameworkCore.PostgreSQL -o Models -f
+
+Genrando controladores correcto :
+8)dotnet aspnet-codegenerator controller -name ClienteController -actions -api -m Cliente -dc grbackContext -outDir Controllers
+
+dotnet aspnet-codegenerator controller -name ClienteController -actions -api -outDir Controllers
+
+
+-----------------------------------------------------------SqlServer---------------------------------------------------------------------------------
+
+SQL SERVER
+
+CREAR BASE DE DATOS.
+
+dotnet ef dbcontext scaffold "Server=DESKTOP-RVM649N\\SQLEXPRESS;Database=MARCIALdb;User Id=Mendez; Password=M3nd3z; Trusted_Connection=True;" -o models
+
+INSTALAR PLUGINS
+
+	dotnet add package Microsoft.EntityFrameworkCore --version 3.0.0
+	dotnet add package Microsoft.EntityFrameworkCore.Design --version 3.0.0
+	dotnet add package Microsoft.EntityFrameworkCore.Tools --version 3.0.0
+	dotnet add package Microsoft.VisualStudio.Web.CodeGeneration.Design --version 3.0.0
+	dotnet add package Microsoft.EntityFrameworkCore.SqlServer --version 3.0.0 		
+	dotnet add package Microsoft.AspNetCore.Cors --version 2.2.0
+
+
+Scafolding la base de datos en visualcode:
+	Primera vez:
+3)dotnet ef dbcontext scaffold "User ID = postgres;Password=Marcial1995;Server=localhost;Port=5432;Database=marcialdb;Integrated Security=true; Pooling=true;" Npgsql.EntityFrameworkCore.PostgreSQL -o Models
+
+
+ services.AddEntityFrameworkNpgsql().AddDbContext<MARCIALDBCONETXT>(opt => 
+           opt.UseNpgsql(Configuration.GetConnectionString("MyWebApiConnection")));
+            services.AddCors(options => 
+            {
+                options.AddPolicy("CorsPolicy",
+                builder => builder.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials());
+            });
+           -------------------------------------------------------
+	
+5)	Dentro de Configure
+		app.UseCors("CorsPolicy");
+
+6) 	Luego en el archivo appsettings.json debemos agregar este codigo debajo de allowedhost:"*",
+		 "ConnectionStrings":{
+    "MyWebApiConnection" : "Server=DESKTOP-RVM649N\\SQLEXPRESS;Database=MARCIALdb;User Id=Mendez; Password=M3nd3z; Trusted_Connection=True; -o models"
+  }
+
+7) using Microsoft.EntityFrameworkCore;
+
+8) dotnet aspnet-codegenerator controller -name ClienteController -actions -api -m Cliente -dc marcialdbCONTEXT -outDir Controllers
+
+
+create table articulo (
+	articuloid int GENERATED ALWAYS AS IDENTITY,
+	nombre varchar,
+	ubicacion varchar,
+	precio float
+)
+
+create table pedidoencabezado(
+	pedidoid int GENERATED ALWAYS AS IDENTITY,
+	fecha date,
+	costo float
+)
+
+create table pedidodetalle(
+	pedidodetalle int int GENERATED ALWAYS AS IDENTITY,
+	pedidoencabezado int,
+	articuloid int,
+	cantidad int
+)
+
+create table usuario (
+	usuarioid int GENERATED ALWAYS AS IDENTITY,
+	nombre varchar,
+	clave varchar,
+	tipo int
+)
+
+create table inventario (
+	inventarioid int GENERATED ALWAYS AS IDENTITY,
+	articuloid int,
+	existencia int
+)
+
+
+
+
+
+
+
